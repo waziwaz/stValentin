@@ -45,7 +45,7 @@
 
         .buttons {
             display: flex;
-            flex-direction: column; /* Empilés sur mobile pour plus de confort */
+            flex-direction: column;
             gap: 15px;
         }
 
@@ -71,7 +71,6 @@
             color: var(--pink-dark);
         }
 
-        /* Animation des cœurs */
         .heart {
             position: absolute;
             color: var(--pink-main);
@@ -87,7 +86,6 @@
             100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Pop-up Overlay */
         .overlay {
             display: none;
             position: fixed;
@@ -114,18 +112,8 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .popup h2 {
-            font-size: 1.4rem;
-            color: var(--pink-dark);
-            margin-bottom: 1rem;
-        }
-
-        .popup p {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-        }
-
+        .popup h2 { font-size: 1.4rem; color: var(--pink-dark); margin-bottom: 1rem; }
+        .popup p { font-size: 1rem; color: #666; margin-bottom: 1.5rem; }
         .btn-popup-confirm { background-color: #eee; color: #555; }
         .btn-popup-cancel { background-color: var(--pink-main); color: white; }
         
@@ -136,13 +124,29 @@
             60% { transform: scale(1.4); }
             100% { transform: scale(1); }
         }
+
+        /* Style de l'écran de chargement */
+        #loader-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: white;
+            z-index: 9999; /* Toujours au dessus de tout */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
-    <div id="loader-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; flex-direction:column; justify-content:center; align-items:center;">
-        <div style="font-size: 50px; animation: heartbeat 1.2s infinite;">❤️</div>
-        <h2 style="color: #ff4d94; font-family: Arial; margin-top: 20px;">Chargement de mon amour<span id="dots"></span></h2>
+
+    <div id="loader-overlay">
+        <div style="font-size: 60px; animation: heartbeat 1.2s infinite;">❤️</div>
+        <h2 style="color: #ff4d94; font-family: Arial; margin-top: 25px;">Chargement de mon amour<span id="dots"></span></h2>
+        <p style="color: #ad1457; font-size: 0.9rem; margin-top: 10px;">Préparation des surprises...</p>
     </div>
+
     <div class="container">
         <div style="font-size: 3rem; margin-bottom: 10px;">💝</div>
         <h1>Veux-tu être ma Valentine ?</h1>
@@ -164,29 +168,40 @@
     </div>
 
     <script>
+        // --- GESTION DU OUI (Avec chargement) ---
         function valider() {
+            // Affichage du loader
             const loader = document.getElementById('loader-overlay');
             loader.style.display = 'flex';
+            
+            // Animation des petits points
             let dotCount = 0;
             const dotsElement = document.getElementById('dots');
-            setInterval(() => {
+            const dotInterval = setInterval(() => {
                 dotCount = (dotCount + 1) % 4;
                 dotsElement.innerText = ".".repeat(dotCount);
             }, 400);
+
+            // Préchargement forcé du GIF
             const gifUrl = "YouCut_20260206_115444746.gif";
             const img = new Image();
             img.src = gifUrl;
 
+            // Quand le GIF est prêt
             img.onload = function() {
                 setTimeout(() => {
+                    clearInterval(dotInterval);
                     window.location.href = "stValentin1/oui.html";
-                }, 2000);
+                }, 2500); // On laisse 2.5s pour faire kitch et laisser le temps de charger
             };
+
+            // Sécurité : Si le GIF met trop de temps (5s), on change quand même
             setTimeout(() => {
                 window.location.href = "stValentin1/oui.html";
             }, 5000);
         }
 
+        // --- AUTRES FONCTIONS ---
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
@@ -224,8 +239,6 @@
             const text = document.getElementById('popup-text');
             text.innerText = messages[index];
             index = (index + 1) % messages.length;
-            
-            // Effet de vibration sur mobile quand on clique "Oui" au refus
             if (navigator.vibrate) navigator.vibrate(50);
         }
     </script>
