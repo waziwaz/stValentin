@@ -154,6 +154,9 @@
     </div>
 
     <script>
+        const gifUrl = "YouCut_20260206_115444746.gif";
+        const preloader = new Image();
+        preloader.src = gifUrl;
         // Cœurs optimisés pour mobile
         function createHeart() {
             const heart = document.createElement('div');
@@ -168,7 +171,6 @@
         setInterval(createHeart, 400);
 
         const messages = [
-            "Tu es sûre de toi ?",
             "Vraiment vraiment ? 😢",
             "Aller s'il te plaît🙏",
             "Même pas avec un chocolat🍫",
